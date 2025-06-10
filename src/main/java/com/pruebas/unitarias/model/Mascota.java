@@ -20,5 +20,6 @@ public class Mascota {
     private String tipo;
 
     private int edad;
-    
+
 }
+
