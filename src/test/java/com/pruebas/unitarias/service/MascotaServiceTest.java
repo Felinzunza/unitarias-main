@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,4 +82,16 @@ class MascotaServiceTest {
         assertThat(resultado).hasSize(2).contains(m1, m2); //voy a comprobar que el tamaño de la lista sea 2 y que contengan esas dos mascotas
         verify(mascotaRepository).findAll();
     }
+
+    @Test
+    void testBuscarMascotaXId(Long id){
+        Mascota mas1 = new Mascota(1L, "Rex", "Perro", 5);
+  
+        when(mascotaRepository.findById(id)).thenReturn(Optional.of(mas1));
+        Optional<Mascota> resultado = mascotaService.obtenerMascotaPorId(id);
+
+       
+    }
+
+
 }
