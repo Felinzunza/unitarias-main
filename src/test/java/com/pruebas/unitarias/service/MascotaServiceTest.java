@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 //"replica"de la capa de servicios
 
-import java.util.Optional;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,25 +36,33 @@ class MascotaServiceTest {
     /* Test para guardar mascota en la capa servicio */
     @Test
     void testGuardarMascota() {
-        //aqui se preparan los datos, una mascota que quiero guardar
-                            //null porque se autogenera
-        Mascota mascota = new Mascota(null, "Rex", "Perro", 5);
-        
-        //me deberia guardarestos datos
-        Mascota mascotaGuardada = new Mascota(1L, "Rex", "Perro", 5);
-        
-        //aqui compruebo si guardo tales datos en postman me dolvera esos datos
-        when(mascotaRepository.save(mascota)).thenReturn(mascotaGuardada);
+    // 🔧 Se crea una mascota de prueba que será pasada al método del servicio
+    // El ID es null porque se supone que será generado automáticamente al guardar
+    Mascota mascota = new Mascota(null, "Rex", "Perro", 5);
+
+    // 📥 Se define la mascota que el mock debe devolver como si hubiera sido guardada en base de datos
+    Mascota mascotaGuardada = new Mascota(1L, "Rex", "Perro", 5);
+
+    // 🧪 Se configura el mock del repositorio: cuando se llame a save con 'mascota',
+    // debe retornar 'mascotaGuardada'. Esto simula el comportamiento del repositorio.
+    when(mascotaRepository.save(mascota)).thenReturn(mascotaGuardada);
         
 
         //excepcion es que el id sea igual a 1
-            Mascota resultado = mascotaService.guardarMascota(mascota);
+        Mascota resultado = mascotaService.guardarMascota(mascota);
+        //  Evalúa que el ID del resultado sea 1
+        assertThat(resultado.getId()).isEqualTo(1L);
 
-            assertThat(resultado.getId()).isEqualTo(1L); //esto es equal del resultado
-            assertThat(resultado.getNombre()).isEqualTo("Rex");
-            assertThat(resultado.getTipo()).isNotEqualTo("Gato");
-            assertThat(resultado.getId()).isEqualTo(5);
+        //  Evalúa que el nombre sea exactamente "Rex"
+        assertThat(resultado.getNombre()).isEqualTo("Rex");
 
+        //  Evalúa que el tipo NO sea "Gato" (se espera "Perro")
+        assertThat(resultado.getTipo()).isNotEqualTo("Gato");
+
+        //  Evalúa que la edad sea 5
+        assertThat(resultado.getEdad()).isEqualTo(5);
+
+        //  Evalúa que el método save() fue efectivamente llamado una vez con el objeto mascota
         verify(mascotaRepository).save(mascota);
 
         //ejecutar prueba desde service test 
@@ -66,7 +73,7 @@ class MascotaServiceTest {
     void testListarMascotas() {
         Mascota m1 = new Mascota(1L, "Rex", "Perro", 5);
         Mascota m2 = new Mascota(2L, "Michi", "Gato", 2);
-        //Me debe retornar estas mascotas cuando obtenga la ista en la base de datos
+        //Me debe retornar estas mascotas cuando obtenga la lista en la base de datos
         when(mascotaRepository.findAll()).thenReturn(Arrays.asList(m1, m2));
 
         //
