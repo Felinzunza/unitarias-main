@@ -129,6 +129,14 @@ class MascotaServiceTest {
     @Test 
     void testEliminarMascota(){
 
+        Long id = 1L;
+        doNothing().when(mascotaRepository).deleteById(id);
+
+        mascotaService.eliminarMascota(id);
+
+        verify(mascotaRepository).deleteById(id);
+
+
 
     }
 
